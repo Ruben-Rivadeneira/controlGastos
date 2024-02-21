@@ -1,17 +1,29 @@
 <?php
-if($_SERVER["REQUEST_METHOD"] == "POST") {
-    include('connection.php');
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $query = "SELECT  * FROM users WHERE email='$email' AND password=MD5('$password')";
-    $result = mysqli_query($connect, $query);
-    if(mysqli_num_rows($result) == 1){
-        session_start();
-        $_SESSION['email'] = $email;
-        header("location: pages/main.php");
-    } else {
-        echo "Email o contraseña incorrecto";
-    }
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  include('connection.php');
+  $email = $_POST['email'];
+  $password = $_POST['password'];
+
+  // Consulta SQL para obtener el usuario con el email proporcionado
+  $query = "SELECT * FROM users WHERE email='$email'";
+  $result = mysqli_query($connect, $query);
+
+  if ($row = mysqli_fetch_assoc($result)) {
+      // Si se encuentra un usuario con el email proporcionado, verificar la contraseña
+      if ($password == $row['password']) {
+          // Contraseña válida, iniciar sesión
+          session_start();
+          $_SESSION['email'] = $email;
+          header("location: pages/main.php");
+          exit(); // Salir del script después de redirigir
+      } else {
+          // Contraseña incorrecta
+          echo "Credenciales inválidas";
+      }
+  } else {
+      // Usuario no encontrado
+      echo "Usuario no encontrado";
+  }
 }
 ?>
 
@@ -43,7 +55,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
       <form action="index.php" method="post">
         <div class="input-group mb-3">
-          <input type="email" class="form-control" placeholder="Email">
+          <input type="email" class="form-control" placeholder="Email" name="email">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
@@ -51,7 +63,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
           </div>
         </div>
         <div class="input-group mb-3">
-          <input type="password" class="form-control" placeholder="Password">
+          <input type="password" class="form-control" placeholder="Password" name="password">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>
