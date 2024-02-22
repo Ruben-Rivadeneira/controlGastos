@@ -173,14 +173,67 @@ if(isset($_SESSION['email'])){
     </div>
     <!-- /.content-header -->
 
-    <!-- Main row -->
-    <div class="row">
-          <!-- Left col -->
-          <!-- /.Left col -->
-          <!-- right col (We are only adding the ID to make the widgets sortable)-->
-          <!-- right col -->
-    </div>
-    <!-- /.row (main row) -->
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <!-- jquery validation -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Registro de Gastos</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form id="quickForm" action="procesar_registro.php" method="post">
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="date">Fecha:</label>
+                    <input type="date" name="date" class="form-control" id="date" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="category">Categoría:</label>
+                    <select class="custom-select form-control-border" name="category" id="category" required>
+                      <option value="alimentos">Alimentos</option>
+                      <option value="transporte">Transporte</option>
+                      <option value="deportes">Vestimenta</option>
+                      <option value="vida personal">Salud</option>
+                      <option value="otros gastos">Otros Gastos</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="description">Descripción</label>
+                    <input type="text" name="description" class="form-control" id="description" required>
+                  </div>
+                  <div class="input-group">
+                    <label for="amount">Monto:</label>
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">$</span>
+                    </div>
+                    <input type="text" class="form-control" name="amount" id="amount">
+                  </div>
+                  <div class="form-group">
+                    <label for="pay">Método de Pago:</label>
+                    <select class="custom-select form-control-border" name="pay" id="pay" required>
+                      <option value="Efectivo">Efectivo</option>
+                      <option value="Transferencia">Transferencia</option>
+                      <option value="Tarjeta de Débito">Tarjeta de Débito</option>
+                      <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+                    </select>
+                  </div>
+                </div>
+                <!-- /.card-body -->
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary">Registrar</button>
+                </div>
+              </form>
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- /Main content -->
   </div>
   <!-- /.content-wrapper -->
   <footer class="main-footer">
