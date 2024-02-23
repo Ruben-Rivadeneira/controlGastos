@@ -2,7 +2,26 @@
 session_start();
 if(isset($_SESSION['email'])){
   $email = $_SESSION['email'];
-
+  include('../connection.php');
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+      $fecha = $_POST["date"];
+      $categoria = $_POST["category"];
+      $descripcion = $_POST["description"];
+      $monto = $_POST["amount"];
+      $metodo_pago = $_POST["pay"];
+  
+      $sql = "INSERT INTO bill (date, category, description, amount, pay) 
+              VALUES ('$fecha', '$categoria', '$descripcion', $monto, '$metodo_pago')";
+  
+      if ($connect->query($sql) === TRUE) {
+          echo "<script>alert('Registro exitoso');</script>";
+      } else {
+          echo "Error al registrar el gasto: " . $connect->error;
+      }
+  
+      // Cerrar la conexión
+      $connect->close();
+  }
 ?>
 
 <!DOCTYPE html>
@@ -32,6 +51,7 @@ if(isset($_SESSION['email'])){
   <link rel="stylesheet" href="../plugins/daterangepicker/daterangepicker.css">
   <!-- summernote -->
   <link rel="stylesheet" href="../plugins/summernote/summernote-bs4.min.css">
+  
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -185,7 +205,7 @@ if(isset($_SESSION['email'])){
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form id="quickForm" action="procesar_registro.php" method="post">
+              <form id="quickForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                 <div class="card-body">
                   <div class="form-group">
                     <label for="date">Fecha:</label>
