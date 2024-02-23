@@ -19,7 +19,6 @@ if(isset($_SESSION['email'])){
           echo "Error al registrar el gasto: " . $connect->error;
       }
   
-      // Cerrar la conexión
       $connect->close();
   }
 ?>
@@ -158,10 +157,18 @@ if(isset($_SESSION['email'])){
             </a>
           </li>
           <li class="nav-item menu-open">
+            <a href="product.php" class="nav-link active">
+              <i class="nav-icon fas fa-shopping-cart"></i>
+              <p>
+                Registro de Productos
+              </p>
+            </a>
+          </li>
+          <li class="nav-item menu-open">
             <a href="cart.php" class="nav-link active">
               <i class="nav-icon fas fa-shopping-cart"></i>
               <p>
-                Registro de Compras
+                Proyección de Compras
               </p>
             </a>
           </li>
@@ -214,10 +221,10 @@ if(isset($_SESSION['email'])){
                   <div class="form-group">
                     <label for="category">Categoría:</label>
                     <select class="custom-select form-control-border" name="category" id="category" required>
-                      <option value="alimentos">Alimentos</option>
-                      <option value="transporte">Transporte</option>
-                      <option value="deportes">Vestimenta</option>
-                      <option value="vida personal">Salud</option>
+                      <option value="Alimentos">Alimentos</option>
+                      <option value="Transporte">Transporte</option>
+                      <option value="Vestimenta">Vestimenta</option>
+                      <option value="Salud">Salud</option>
                       <option value="otros gastos">Otros Gastos</option>
                     </select>
                   </div>

@@ -2,7 +2,22 @@
 session_start();
 if(isset($_SESSION['email'])){
   $email = $_SESSION['email'];
-
+  include('../connection.php');
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+      $detalle = $_POST["detail"];
+      $monto = $_POST["amount"];
+      
+      $sql = "INSERT INTO product (detail, price) 
+              VALUES ('$detalle', '$monto')";
+  
+      if ($connect->query($sql) === TRUE) {
+          echo "<script>alert('Registro exitoso');</script>";
+      } else {
+          echo "Error al registrar el gasto: " . $connect->error;
+      }
+  
+      $connect->close();
+  }
 ?>
 
 <!DOCTYPE html>
@@ -168,12 +183,12 @@ if(isset($_SESSION['email'])){
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Dashboard</h1>
+            <h1 class="m-0">Productos</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Inicio</a></li>
-              <li class="breadcrumb-item active">Dashboard v1</li>
+              <li class="breadcrumb-item active">Productos v1</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -181,104 +196,42 @@ if(isset($_SESSION['email'])){
     </div>
     <!-- /.content-header -->
 
-    <!-- Main row -->
-    <div class="row">
-          <!-- Left col -->
-          <!-- /.Left col -->
-          <!-- right col (We are only adding the ID to make the widgets sortable)-->
-          <!-- right col -->
-    </div>
-    <!-- /.row (main row) -->
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
-        <!-- Small boxes (Stat box) -->
         <div class="row">
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-info">
-              <div class="inner">
-                <h3>150</h3>
-
-                <p>Ingresos</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-bag"></i>
-              </div>
-            </div>
-          </div>
-          <!-- ./col -->
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-success">
-              <div class="inner">
-                <h3>53<sup style="font-size: 20px">%</sup></h3>
-
-                <p>Gastos</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-stats-bars"></i>
-              </div>
-            </div>
-          </div>
-          <!-- ./col -->
-          <div class="col-lg-3 col-6">
-            <!-- small box -->
-            <div class="small-box bg-warning">
-              <div class="inner">
-                <h3>44</h3>
-
-                <p>Rentabilidad</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-person-add"></i>
-              </div>
-            </div>
-          </div>
-          <!-- ./col -->
-        </div>
-        <!-- /.row -->
-        <!-- Main row -->
-        <div class="row">
-          <!-- Left col -->
-          <section class="col-lg-7 connectedSortable">
-            <!-- Custom tabs (Charts with tabs)-->
-            <div class="card">
+          <div class="col-md-12">
+            <!-- jquery validation -->
+            <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">
-                  <i class="fas fa-chart-pie mr-1"></i>
-                  Sales
-                </h3>
-                <div class="card-tools">
-                  <ul class="nav nav-pills ml-auto">
-                    <li class="nav-item">
-                      <a class="nav-link active" href="#revenue-chart" data-toggle="tab">Area</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="#sales-chart" data-toggle="tab">Donut</a>
-                    </li>
-                  </ul>
-                </div>
-              </div><!-- /.card-header -->
-              <div class="card-body">
-                <div class="tab-content p-0">
-                  <!-- Morris chart - Sales -->
-                  <div class="chart tab-pane active" id="revenue-chart"
-                       style="position: relative; height: 300px;">
-                      <canvas id="revenue-chart-canvas" height="300" style="height: 300px;"></canvas>
-                   </div>
-                  <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;">
-                    <canvas id="sales-chart-canvas" height="300" style="height: 300px;"></canvas>
+                <h3 class="card-title">Registro de Producto</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form id="productForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="text">Detalle:</label>
+                    <input type="text" name="detail" class="form-control" id="detail" required>
+                  </div>
+                  <div class="input-group">
+                    <label for="amount">Monto:</label>
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">$</span>
+                    </div>
+                    <input type="text" class="form-control" name="amount" id="amount">
                   </div>
                 </div>
-              </div><!-- /.card-body -->
+                <!-- /.card-body -->
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary">Registrar</button>
+                </div>
+              </form>
             </div>
             <!-- /.card -->
-          </section>
-          <!-- /.Left col -->
+          </div>
         </div>
-        <!-- /.row (main row) -->
-      </div><!-- /.container-fluid -->
+      </div>
     </section>
     <!-- /.content -->
   </div>

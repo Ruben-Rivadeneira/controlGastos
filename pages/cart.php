@@ -138,10 +138,18 @@ if(isset($_SESSION['email'])){
             </a>
           </li>
           <li class="nav-item menu-open">
+            <a href="product.php" class="nav-link active">
+              <i class="nav-icon fas fa-shopping-cart"></i>
+              <p>
+                Registro de Productos
+              </p>
+            </a>
+          </li>
+          <li class="nav-item menu-open">
             <a href="cart.php" class="nav-link active">
               <i class="nav-icon fas fa-shopping-cart"></i>
               <p>
-                Registro de Compras
+                Proyección de Compras
               </p>
             </a>
           </li>
