@@ -4,7 +4,7 @@ session_start();
 if(isset($_SESSION['email'])){
   $email = $_SESSION['email'];
   include('../connection.php');
-  $query = 'SELECT detail, price FROM product';
+  $query = 'SELECT detail, price FROM product ORDER BY detail asc';
   $result = $connect -> query($query);
   if($result->num_rows > 0){
     
@@ -239,16 +239,16 @@ if(isset($_SESSION['email'])){
               <!-- form start -->
               <form id="formularioCompra" method="post">
                 <div class="card-body">
-                  <div class="form-group">
-                    <label for="producto">Producto:</label>
-                    <select name="producto" id="producto">
-                      <?php
-                        while ($row = $result->fetch_assoc()){
+                <div class="form-group">
+                  <label for="producto">Producto:</label>
+                  <select class="custom-select" name="producto" id="producto">
+                    <?php
+                      while ($row = $result->fetch_assoc()){
                         echo "<option value='". $row['detail'] . "'>". $row['detail'].'<br>'."</option>";
                       }
-                      ?>
-                    </select>
-                  </div>
+                    ?>
+                  </select>
+                </div>
                   <div class="form-group">
                     <label for="cantidad">Cantidad:</label>
                     <input type="number" name="cantidad" class="form-control" id="cantidad" required>
@@ -336,6 +336,8 @@ if(isset($_SESSION['email'])){
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js"></script>
 <script>
+
+
   function generarPDF(event){
     event.preventDefault()
 
