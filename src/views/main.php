@@ -6,7 +6,7 @@ if(isset($_SESSION['email'])){
   $sql = "SELECT id FROM users WHERE email = '".$email."'";
   $result = $connect -> query($sql);
   $user_id = $result->fetch_assoc()['id'];
-  $query = 'SELECT SUM(amount) FROM bill WHERE id="'.$user_id.'"';
+  $query = 'SELECT * FROM total_amounts WHERE user_id="'.$user_id.'"';
   $result = $connect -> query($query);
   if( $result->num_rows > 0 ){
     $total = $result -> fetch_assoc();
@@ -105,7 +105,7 @@ include('../config/navbar.php');
             <!-- small box -->
             <div class="small-box bg-info">
               <div class="inner">
-                <h3>150</h3>
+                <h3><?php echo $total['revenue_amount']; ?><sup style="font-size: 20px">$</sup></h3>
 
                 <p>Ingresos</p>
               </div>
@@ -119,7 +119,7 @@ include('../config/navbar.php');
             <!-- small box -->
             <div class="small-box bg-success">
               <div class="inner">
-                <h3><?php echo $total['SUM(amount)']; ?><sup style="font-size: 20px">$</sup></h3>
+                <h3><?php echo $total['bill_amount']; ?><sup style="font-size: 20px">$</sup></h3>
 
                 <p>Gastos</p>
               </div>
@@ -133,7 +133,7 @@ include('../config/navbar.php');
             <!-- small box -->
             <div class="small-box bg-warning">
               <div class="inner">
-                <h3>44</h3>
+                <h3><?php echo ($total['revenue_amount']-$total['bill_amount']); ?><sup style="font-size: 20px">$</sup></h3>
 
                 <p>Rentabilidad</p>
               </div>
@@ -152,79 +152,75 @@ include('../config/navbar.php');
             <!-- Custom tabs (Charts with tabs)-->
             
             <?php
-            $sql = "SELECT MONTH(date) as mes, YEAR(date) as anio, SUM(amount) as total FROM bill GROUP BY mes, anio";
-            $result = $connect -> query($sql);
-            $month = [
-              1 => 'Enero',
-              2 => 'Febrero',
-              3 => 'Marzo',
-              4 => 'Abril',
-              5 => 'Mayo',
-              6 => 'Junio',
-              7 => 'Julio',
-              8 => 'Agosto',
-              9 => 'Septiembre',
-              10 => 'Octubre',
-              11 => 'Noviembre',
-              12 => 'Diciembre'
-            ];
-
+            $sqlBill = "SELECT MONTH(date) AS mes, YEAR(date) AS anio, SUM(amount) AS total FROM bill WHERE user_id=$user_id GROUP BY mes, anio";
+            $resultBill = $connect -> query($sqlBill);
+            $sqlRevenue = "SELECT MONTH(date) AS mes, YEAR(date) AS anio, SUM(amount) AS total FROM revenue WHERE user_id=$user_id GROUP BY mes, anio";
+            $resultRevenue = $connect -> query($sqlRevenue);
             $labels = array();
-            $data = array();
-            foreach($result as $row){
-              $mes = $month[$row['mes']];
-              $anio = $row['anio'];
-              $total = $row['total'];
+            $dataBill = array();
+            $dataRevenue = array();
 
-              $labels[] = $mes .' '. $anio;
-              $data[] = $total;
-            }
+            foreach ($resultBill as $row) {
+              $mes = $row['mes'];
+              $anio = $row['anio'];
+              $totalBill = $row['total'];
+          
+              $label = date("F", mktime(0, 0, 0, $mes, 1)) . " " . $anio;
+              $labels[] = $label;
+              $dataBill[] = $totalBill;
+          }
+          
+          foreach ($resultRevenue as $row) {
+              $mes = $row['mes'];
+              $anio = $row['anio'];
+              $totalRevenue = $row['total'];
+          
+              $label = date("F", mktime(0, 0, 0, $mes, 1)) . " " . $anio;
+              $index = array_search($label, $labels);
+          
+              if ($index === false) {
+                  $labels[] = $label;
+                  $dataRevenue[] = $totalRevenue;
+                  $dataBill[] = 0; 
+              } else {
+                  $dataRevenue[$index] = $totalRevenue;
+              }
+          }
             ?>
 
-            <canvas id="barChart"></canvas>
+            <canvas id="lineChart"></canvas>
             <script>
-              var ctx = document.getElementById('barChart').getContext('2d');
-              var  myChart = new Chart(ctx, {
-                type: 'bar',
+              var ctx = document.getElementById('lineChart').getContext('2d');
+              var  Chart = new Chart(ctx, {
+                type: 'line',
                 data: {
                   labels: <?php echo json_encode($labels);?>,
-                  datasets: [{
-                    label: 'Gastos',
-                    data: <?php echo json_encode($data);?>
-                  }]
+                  datasets: [
+                    {
+                      label: 'Gastos',
+                      data: <?php echo json_encode($dataBill); ?>,
+                      backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                      borderColor: 'rgba(255, 99, 132, 1)',
+                      borderWidth: 1
+                    },
+                    {
+                      label: 'Ingresos',
+                      data: <?php echo json_encode($dataRevenue); ?>,
+                      backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                      borderColor: 'rgba(54, 162, 235, 1)',
+                      borderWidth: 1
+                    }
+                  ]
+                },
+                options: {
+                  scales: {
+                    y: {
+                      beginAtZero: true
+                    }
+                  }
                 }
               });
             </script>
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">
-                  <i class="fas fa-chart-pie mr-1"></i>
-                  Sales
-                </h3>
-                <div class="card-tools">
-                  <ul class="nav nav-pills ml-auto">
-                    <li class="nav-item">
-                      <a class="nav-link active" href="#revenue-chart" data-toggle="tab">Area</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="#sales-chart" data-toggle="tab">Donut</a>
-                    </li>
-                  </ul>
-                </div>
-              </div><!-- /.card-header -->
-              <div class="card-body">
-                <div class="tab-content p-0">
-                  <!-- Morris chart - Sales -->
-                  <div class="chart tab-pane active" id="revenue-chart"
-                       style="position: relative; height: 300px;">
-                      <canvas id="revenue-chart-canvas" height="300" style="height: 300px;"></canvas>
-                   </div>
-                  <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;">
-                    <canvas id="sales-chart-canvas" height="300" style="height: 300px;"></canvas>
-                  </div>
-                </div>
-              </div><!-- /.card-body -->
-            </div>
             <!-- /.card -->
           </section>
           <!-- /.Left col -->
@@ -243,6 +239,6 @@ include('../config/navbar.php');
 <?php
   } 
 } else {
-  header("Location: ../index.php");
+  header("Location: ../../index.php");
   exit;
 } ?>

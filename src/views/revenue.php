@@ -3,12 +3,16 @@ session_start();
 if(isset($_SESSION['email'])){
   $email = $_SESSION['email'];
   include('../config/connection.php');
+  $sql = "SELECT id FROM users WHERE email = '".$email."'";
+  $result = $connect -> query($sql);
+  $user_id = $result->fetch_assoc()['id'];
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $detalle = $_POST["detail"];
       $monto = $_POST["amount"];
+      $fecha = $_POST["date"];
       
-      $sql = "INSERT INTO product (detail, price) 
-              VALUES ('$detalle', '$monto')";
+      $sql = "INSERT INTO revenue (date, detail, amount, user_id) 
+              VALUES ('$fecha','$detalle', '$monto','$user_id')";
   
       if ($connect->query($sql) === TRUE) {
           echo "<script>alert('Registro exitoso');</script>";
@@ -89,12 +93,12 @@ if(isset($_SESSION['email'])){
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Productos</h1>
+            <h1 class="m-0">Ingresos</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Inicio</a></li>
-              <li class="breadcrumb-item active">Productos v1</li>
+              <li class="breadcrumb-item active">Ingresos v1</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -110,12 +114,16 @@ if(isset($_SESSION['email'])){
             <!-- jquery validation -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Registro de Producto</h3>
+                <h3 class="card-title">Registro de Ingresos</h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
               <form id="productForm" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
                 <div class="card-body">
+                    <div class="form-group">
+                        <label for="date">Fecha:</label>
+                        <input type="date" name="date" class="form-control" id="date" required>
+                    </div>
                   <div class="form-group">
                     <label for="text">Detalle:</label>
                     <input type="text" name="detail" class="form-control" id="detail" required>
@@ -125,7 +133,7 @@ if(isset($_SESSION['email'])){
                     <div class="input-group-prepend">
                       <span class="input-group-text">$</span>
                     </div>
-                    <input type="text" class="form-control" name="amount" id="amount">
+                    <input type="text" class="form-control" name="amount" id="amount" required>
                   </div>
                 </div>
                 <!-- /.card-body -->

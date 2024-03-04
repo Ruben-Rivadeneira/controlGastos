@@ -42,6 +42,14 @@
             </a>
           </li>
           <li class="nav-item menu-open">
+            <a href="revenue.php" class="nav-link active">
+              <i class="nav-icon fas fa-dollar-sign"></i>
+              <p>
+                Registro de Ingresos
+              </p>
+            </a>
+          </li>
+          <li class="nav-item menu-open">
             <a href="bill.php" class="nav-link active">
               <i class="nav-icon fas fa-money-bill"></i>
               <p>
@@ -51,7 +59,7 @@
           </li>
           <li class="nav-item menu-open">
             <a href="product.php" class="nav-link active">
-              <i class="nav-icon fas fa-shopping-cart"></i>
+              <i class="nav-icon fas fa-briefcase"></i>
               <p>
                 Registro de Productos
               </p>

@@ -180,6 +180,6 @@ include('../config/navbar.php');
 </body>
 </html>
 <?php } else {
-  header("Location: ../index.php");
+  header("Location: ../../index.php");
   exit;
 } ?>
