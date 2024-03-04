@@ -1,5 +1,5 @@
 <?php
-include('../connection.php');
+include('connection.php');
 $producto = $_POST['producto'];
 $query = "SELECT price FROM product WHERE detail = '$producto'";
 $resultado = $connect->query($query);

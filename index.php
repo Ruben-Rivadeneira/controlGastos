@@ -1,27 +1,22 @@
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  include('connection.php');
+  include('src/config/connection.php');
   $email = $_POST['email'];
   $password = $_POST['password'];
 
-  // Consulta SQL para obtener el usuario con el email proporcionado
   $query = "SELECT * FROM users WHERE email='$email'";
   $result = mysqli_query($connect, $query);
 
   if ($row = mysqli_fetch_assoc($result)) {
-      // Si se encuentra un usuario con el email proporcionado, verificar la contraseña
       if ($password == $row['password']) {
-          // Contraseña válida, iniciar sesión
           session_start();
           $_SESSION['email'] = $email;
-          header("location: pages/main.php");
-          exit(); // Salir del script después de redirigir
+          header("location: src/views/main.php");
+          exit();
       } else {
-          // Contraseña incorrecta
           echo "Credenciales inválidas";
       }
   } else {
-      // Usuario no encontrado
       echo "Usuario no encontrado";
   }
 }
@@ -37,16 +32,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="public/plugins/fontawesome-free/css/all.min.css">
   <!-- icheck bootstrap -->
-  <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+  <link rel="stylesheet" href="public/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="public/dist/css/adminlte.min.css">
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <a href="../../index2.html"><b>Control </b>Gastos</a>
+    <a href="index.php"><b>Control </b>Gastos</a>
   </div>
   <!-- /.login-logo -->
   <div class="card">
@@ -89,10 +84,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!-- /.login-box -->
 
 <!-- jQuery -->
-<script src="plugins/jquery/jquery.min.js"></script>
+<script src="public/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
-<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="public/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
-<script src="dist/js/adminlte.min.js"></script>
+<script src="public/dist/js/adminlte.min.js"></script>
 </body>
 </html>
