@@ -6,7 +6,7 @@ if(isset($_SESSION['email'])){
   $sql = "SELECT id FROM users WHERE email = '".$email."'";
   $result = $connect -> query($sql);
   $user_id = $result->fetch_assoc()['id'];
-  $query = 'SELECT FORMAT(bill_amount,2) AS bill_amount, FORMAT(revenue_amount,2) AS revenue_amount FROM total_amounts WHERE user_id="'.$user_id.'"';
+  $query = 'SELECT bill_amount, revenue_amount FROM total_amounts WHERE user_id="'.$user_id.'"';
   $result = $connect -> query($query);
   if( $result->num_rows > 0 ){
     $total = $result -> fetch_assoc();
@@ -133,7 +133,7 @@ include('../config/navbar.php');
             <!-- small box -->
             <div class="small-box bg-warning">
               <div class="inner">
-                <h3><?php echo ((double)$total['revenue_amount']-(double)$total['bill_amount']); ?><sup style="font-size: 20px">$</sup></h3>
+                <h3><?php echo ((double)$total['revenue_amount']-(double)$total['bill_amount']);?><sup style="font-size: 20px">$</sup></h3>
 
                 <p>Rentabilidad</p>
               </div>
