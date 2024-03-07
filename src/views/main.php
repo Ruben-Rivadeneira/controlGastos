@@ -221,6 +221,73 @@ include('../config/navbar.php');
                 }
               });
             </script>
+            <?php
+            $sql = "SELECT MONTH(date) AS mes, YEAR(date) as anio, category, SUM(amount) AS total
+                    FROM bill
+                    WHERE user_id=$user_id
+                    GROUP BY mes, anio, category";
+            $result = $connect -> query($sql);
+
+            $labels = array();
+            $dataSets = array();
+
+            foreach ($result as $row){
+              $mesC = $row['mes'];
+              $anio = $row['anio'];
+              $categoria = $row['category'];
+              $total = $row['total'];
+
+              $label = date("F", mktime(0, 0, 0, $mes, 1)). " " . $anio;
+
+              if(!in_array($label, $labels)){
+                $labels[] = $label;
+              }
+
+              $clave_categoria = array_search($categoria, array_column($dataSets, 'label'));
+
+              if($clave_categoria == false){
+                $dataSets[] = array(
+                  'label' => $categoria,
+                  'data' => array_fill(0, count($labels),0)
+                );
+                $clave_categoria = count($dataSets) - 1;
+              }
+
+              $indice_mes = array_search($label, $labels);
+
+              if($indice_mes !== false){
+                $dataSets[$clave_categoria]['data'][$indice_mes] = $total;
+              } else {
+                $datasets[$clave_categoria]['data'][] = 0;
+              }
+
+              
+            }
+            ?>
+            <div class="col-sm-6">
+              <h1 class="m-0">Por categoría</h1>
+            </div><!-- /.col -->
+            <canvas id="barChart"></canvas>
+            <script>
+              document.addEventListener('DOMContentLoaded', function() {
+                var ctx = document.getElementById('barChart').getContext('2d');
+                var chart = new Chart(ctx, {
+                  type: 'bar',
+                  data: {
+                    labels: <?php echo json_encode($labels); ?>,
+                    datasets: <?php echo json_encode($dataSets); ?>
+                  },
+                  options: {
+                    scales: {
+                      y: {
+                        beginAtZero: true
+                      }
+                    }
+                  }
+                });
+              });
+              
+            </script>
             <!-- /.card -->
           </section>
           <!-- /.Left col -->
